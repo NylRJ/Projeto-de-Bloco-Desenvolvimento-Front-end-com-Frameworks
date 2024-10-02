@@ -7,6 +7,7 @@ import ProdutoService from '../../services/produtoService';
 import { ProdutoBase } from '../../types/types';
 import { RootStackParamList } from '../../types/types';
 import { onSnapshot } from 'firebase/firestore';
+import CustomButton from '@/app/components/CustomButton';
 
 
 type GerenciarFornecedoresScreenNavigationProp = StackNavigationProp<
@@ -54,13 +55,23 @@ const GerenciarProdutosScreen: React.FC = () => {
             )}
             <Card.Title title={item.nome} subtitle={item.especificacao} />
             <Card.Actions>
-                <Button onPress={() => navigation.navigate('EditProduto', { id: item.id })}>
-                    Editar
-                </Button>
 
-                <Button style={{ backgroundColor: 'red' }} onPress={() => handleDelete(item.id!)} >
-                    Excluir
-                </Button>
+                <CustomButton
+                    borderRadius={20}
+                    backgroundColor='#0e4f66'
+                    title='Editar'
+                    icon='pencil'
+                    onPress={() => navigation.navigate('EditProduto', { id: item.id })}
+                />
+                <CustomButton
+                    borderRadius={20}
+                    backgroundColor='#fc0828'
+                    title='Excluir'
+                    icon='trash-can'
+                    onPress={() => handleDelete(item.id!)}
+                />
+
+
             </Card.Actions>
         </Card>
     );

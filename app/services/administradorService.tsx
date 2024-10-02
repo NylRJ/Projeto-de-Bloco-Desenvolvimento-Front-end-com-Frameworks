@@ -6,7 +6,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 class AdministradorService {
 
 
-    async criarAdministrador(email: string, senha: string, nome: string): Promise<void> {
+    async criarColaborador(email: string, senha: string, nome: string): Promise<void> {
         try {
 
             const userCredential = await createUserWithEmailAndPassword(auth, email, senha);
@@ -20,7 +20,7 @@ class AdministradorService {
                 uid: colaboradorId,
                 email,
                 nome,
-                papel: 'Administrador',
+                papel: 'Colaborador',
                 status: 'Liberado',
             };
 

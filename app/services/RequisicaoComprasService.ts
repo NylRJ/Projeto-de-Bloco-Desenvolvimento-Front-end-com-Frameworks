@@ -14,6 +14,8 @@ import {
 import { db } from './firebaseConfig';
 
 class RequisicaoComprasService {
+    // Lista de funções unsubscribe para escutas de snapshots
+    unsubscribeList: (() => void)[] = [];
 
 
 
@@ -68,36 +70,60 @@ class RequisicaoComprasService {
          return unsubscribe;
      }*/
 
-    listenToAllRequisicoes(callback: (requisicoes: any[]) => void) {
-        const usuariosRef = collection(db, 'usuarios');
-        const todasRequisicoes: any[] = [];
+    /**
+     * Escuta todas as requisições de compras de todos os colaboradores em tempo real.
+     * @param callback Função que será chamada com a lista atualizada de requisições.
+     * @returns Função de unsubscribe para parar de escutar as atualizações.
+     */
+    listenToAllRequisicoes(callback: (requisicoes: any[]) => void): () => void {
+        const usuariosCollection = collection(db, 'usuarios');
 
-        const unsubscribe = onSnapshot(usuariosRef, (usuariosSnapshot) => {
-            todasRequisicoes.length = 0; // Limpa o array para evitar duplicações
+        const allRequisicoes: any[] = [];
+        const unsubscribeList: (() => void)[] = [];
 
-            // Para cada usuário, escuta as alterações na subcoleção requisicoes_compras
-            usuariosSnapshot.docs.forEach((usuarioDoc) => {
-                const requisicoesRef = collection(db, `usuarios/${usuarioDoc.id}/requisicoes_compras`);
+        // Começa obtendo todos os documentos de usuários
+        getDocs(usuariosCollection).then((querySnapshot) => {
+            querySnapshot.forEach((usuarioDoc) => {
+                const requisicoesCollection = collection(db, `usuarios/${usuarioDoc.id}/requisicoes_compras`);
 
-                // Adiciona um listener para cada subcoleção de requisicoes_compras
-                onSnapshot(requisicoesRef, (requisicoesSnapshot) => {
-                    requisicoesSnapshot.forEach((requisicaoDoc) => {
-                        todasRequisicoes.push({
+                // Escuta as mudanças em cada subcoleção de requisições
+                const unsubscribe = onSnapshot(requisicoesCollection, (snapshot) => {
+                    snapshot.forEach((requisicaoDoc) => {
+                        const requisicao = {
                             id: requisicaoDoc.id,
-                            usuarioId: usuarioDoc.id,
-                            usuarioNome: usuarioDoc.data().nome,
                             ...requisicaoDoc.data(),
-                        });
+                        };
+
+                        // Atualiza ou substitui a requisição na lista global
+                        const index = allRequisicoes.findIndex((req) => req.id === requisicao.id);
+                        if (index >= 0) {
+                            allRequisicoes[index] = requisicao;
+                        } else {
+                            allRequisicoes.push(requisicao);
+                        }
                     });
 
-                    // Chama o callback com as requisições atualizadas
-                    callback(todasRequisicoes);
+                    // Chama o callback com a lista atualizada de requisições
+                    callback([...allRequisicoes]);
                 });
+
+                // Adiciona a função de unsubscribe à lista
+                unsubscribeList.push(unsubscribe);
             });
+        }).catch((error) => {
+            console.error('Erro ao buscar usuários:', error);
         });
 
-        return unsubscribe;
+        // Retorna a função de unsubscribe que desativa todas as escutas
+        return () => {
+            unsubscribeList.forEach((unsubscribe) => unsubscribe());
+        };
     }
+
+
+
+
+
 
 
 
@@ -199,6 +225,30 @@ class RequisicaoComprasService {
         }
     }
 
+    /**
+     * Escuta as mudanças de uma requisição em tempo real.
+     * @param colaboradorId O ID do colaborador que fez a requisição.
+     * @param requisicaoId O ID da requisição.
+     * @param callback Função que será chamada quando a requisição for atualizada.
+     * @returns Função de unsubscribe para parar de escutar as atualizações.
+     */
+    listenToRequisicao(colaboradorId: string, requisicaoId: string, callback: (requisicao: any) => void): () => void {
+        const requisicaoRef = doc(db, `usuarios/${colaboradorId}/requisicoes_compras`, requisicaoId);
+
+        // Inicia a escuta em tempo real para este documento
+        const unsubscribe = onSnapshot(requisicaoRef, (snapshot) => {
+            if (snapshot.exists()) {
+                const requisicaoData = snapshot.data();
+                callback(requisicaoData); // Chama o callback com os dados atualizados da requisição
+            } else {
+                console.error('Requisição não encontrada.');
+            }
+        }, (error) => {
+            console.error('Erro ao escutar mudanças na requisição: ', error);
+        });
+
+        return unsubscribe; // Retorna a função de unsubscribe para parar a escuta quando necessário
+    }
 
     async getFornecedoresByProdutoId(produtoId: string) {
         const fornecedoresSnapshot = await getDocs(collection(db, 'fornecedores'));

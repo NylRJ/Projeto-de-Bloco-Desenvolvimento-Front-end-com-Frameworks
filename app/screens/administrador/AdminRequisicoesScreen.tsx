@@ -1,31 +1,35 @@
 import React, { useEffect, useState } from 'react';
 import { ScrollView, View, StyleSheet, TextStyle } from 'react-native';
-import { Card, Text, ActivityIndicator, IconButton, Button } from 'react-native-paper';
+import { Card, Text, IconButton, Button } from 'react-native-paper';
 import RequisicaoComprasService from '../../services/RequisicaoComprasService';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { useNavigation } from '@react-navigation/native';
 import { RootStackParamList } from '@/app/types/types';
 import LoadingIndicator from '@/app/components/LoadingIndicator';
-import CustomButton from '@/app/components/CustomButton';
 
 type AdminRequisicoesScreenNavigationProp = StackNavigationProp<
     RootStackParamList,
     'AdminRequisicoesScreen'
 >;
 
-
 const AdminRequisicoesScreen: React.FC = () => {
     const navigation = useNavigation<AdminRequisicoesScreenNavigationProp>();
     const [requisicoes, setRequisicoes] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
+    const [renderTrigger, setRenderTrigger] = useState(0);
 
     useEffect(() => {
         const unsubscribe = RequisicaoComprasService.listenToAllRequisicoes((updatedRequisicoes) => {
-            setRequisicoes(updatedRequisicoes);
+            setRequisicoes([...updatedRequisicoes]);
             setLoading(false);
+            setRenderTrigger(prev => prev + 1); // Incrementa o contador para forçar a re-renderização
         });
 
-        return () => unsubscribe();
+        return () => {
+            if (unsubscribe) {
+                unsubscribe();
+            }
+        };
     }, []);
 
     const initCotacao = async (requisicaoId: string, colaboradorId: string) => {
@@ -34,12 +38,10 @@ const AdminRequisicoesScreen: React.FC = () => {
             requisicaoId: requisicaoId,
             colaboradorId: colaboradorId,
         });
-
     };
 
-
     if (loading) {
-        return <LoadingIndicator text='Buscando Requisições...' />;
+        return <LoadingIndicator text="Buscando Requisições..." />;
     }
 
     return (
@@ -49,8 +51,8 @@ const AdminRequisicoesScreen: React.FC = () => {
             {requisicoes.length === 0 ? (
                 <Text style={styles.noDataText}>Nenhuma requisição encontrada.</Text>
             ) : (
-                requisicoes.map((requisicao) => (
-                    <Card key={requisicao.id} style={styles.card}>
+                requisicoes.map((requisicao, index) => (
+                    <Card key={`${requisicao.id}-${renderTrigger}-${index}`} style={styles.card}>
                         <Card.Title
                             title={requisicao.produtoNome}
                             subtitle={`Data: ${new Date(requisicao.data.seconds * 1000).toLocaleDateString()}`}
@@ -61,43 +63,34 @@ const AdminRequisicoesScreen: React.FC = () => {
                                         icon={requisicao.status === 'Finalizada' ? 'check-circle' : 'progress-clock'}
                                         iconColor={getStatusColor(requisicao.status)}
                                     />
-
                                     <Button
                                         mode="contained"
-                                        onPress={() => initCotacao(requisicao.id, requisicao.id_colaborador)
-
-                                        }
+                                        onPress={() => initCotacao(requisicao.id, requisicao.id_colaborador)}
                                         disabled={requisicao.status === 'Finalizada'}
                                         style={styles.cotacaoButton}
                                     >
                                         {requisicao.status === 'Finalizada' ? 'Finalizada' : 'Iniciar Cotação'}
                                     </Button>
-
                                     <Button
-
                                         mode="contained"
-                                        onPress={() => navigation.navigate('DetalhesRequisicaoScreen', {
-                                            colaboradorId: requisicao.id_colaborador,
-                                            requisicaoId: requisicao.id
-                                        })}
-
-
+                                        onPress={() =>
+                                            navigation.navigate('DetalhesRequisicaoScreen', {
+                                                colaboradorId: requisicao.id_colaborador,
+                                                requisicaoId: requisicao.id,
+                                            })
+                                        }
                                         style={styles.cotacaoButton}
                                     >
                                         Detalhes
                                     </Button>
-
-
                                 </>
                             )}
                         />
                         <Card.Content>
                             <Text style={styles.label}>Motivo:</Text>
                             <Text>{requisicao.motivo || 'Nenhum'}</Text>
-
                             <Text style={styles.label}>Quantidade:</Text>
                             <Text>{requisicao.quantidade}</Text>
-
                             <Text style={styles.label}>Status:</Text>
                             <Text style={getStatusStyle(requisicao.status)}>{requisicao.status}</Text>
                         </Card.Content>
@@ -155,7 +148,6 @@ const styles = StyleSheet.create({
     card: {
         marginBottom: 15,
         backgroundColor: '#fff',
-
     },
     label: {
         fontWeight: '600',
@@ -164,12 +156,7 @@ const styles = StyleSheet.create({
     cotacaoButton: {
         margin: 10,
         marginLeft: 20,
-
         backgroundColor: '#005780',
-
-    },
-    button: {
-        marginVertical: 10,
     },
 });
 

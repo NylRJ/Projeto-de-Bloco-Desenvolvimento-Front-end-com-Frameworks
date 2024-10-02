@@ -17,7 +17,7 @@ const CreateAdministradorScreen: React.FC = () => {
         }
 
         try {
-            await colaboradorService.criarAdministrador(email, senha, nome);
+            await colaboradorService.criarColaborador(email, senha, nome);
             Alert.alert('Sucesso', 'Colaborador criado com sucesso!');
             navigation.goBack();
         } catch (error) {

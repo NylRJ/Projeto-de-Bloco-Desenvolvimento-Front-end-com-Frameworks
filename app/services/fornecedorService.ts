@@ -6,6 +6,20 @@ import produtoService from './produtoService';
 class FornecedorService {
 
 
+
+    // Adiciona um contato a um fornecedor
+    async createContatoForFornecedor(fornecedorId: string, contato: Contato): Promise<void> {
+        const contatosRef = collection(db, `fornecedores/${fornecedorId}/contatos`);
+        await addDoc(contatosRef, contato);
+    }
+
+    // Exemplo de uso: Cria um fornecedor e vincula um contato
+    async addFornecedorWithContato(fornecedor: Fornecedor, contato: Contato): Promise<void> {
+        const fornecedorRef = await addDoc(collection(db, 'fornecedores'), fornecedor);
+        await updateDoc(fornecedorRef, { id: fornecedorRef.id });
+        await this.createContatoForFornecedor(fornecedorRef.id, contato);
+    }
+
     async getFornecedoresByCnpj(cnpj_cpf: string) {
         const q = query(collection(db, 'fornecedores'), where('cnpj_cpf', '==', cnpj_cpf));
         const querySnapshot = await getDocs(q);

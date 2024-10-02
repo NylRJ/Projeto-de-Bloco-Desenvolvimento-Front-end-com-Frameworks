@@ -2,7 +2,7 @@ import React, { createContext, useState, useContext, useEffect } from 'react';
 import { onAuthStateChanged, signOut, signInWithEmailAndPassword, createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
 import { auth, db } from '../services/firebaseConfig';
 import UsuarioService from '../services/userService';
-import { Usuario } from '../types/types';
+import { AuthContextType, Usuario } from '../types/types';
 import { doc, setDoc } from 'firebase/firestore';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
@@ -16,15 +16,7 @@ const PASSWORD_KEY = 'admin_password';
 
 
 
-interface AuthContextType {
-    user: Usuario | null;
-    isAuthenticated: boolean;
-    isLoading: boolean;
-    login: (email: string, password: string) => Promise<void>;
-    signup: (email: string, password: string, nome: string, papel?: string) => Promise<void>;
-    logout: () => Promise<void>;
-    getAdminToken: () => Promise<string | null>; // Nova função para pegar o token do admin
-}
+
 type AuthContextNavigationProp = StackNavigationProp<RootStackParamList, 'AuthContext'>;
 const AuthContext = createContext<AuthContextType>({} as AuthContextType);
 
@@ -34,6 +26,38 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
 
+
+    useEffect(() => {
+        const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+            if (firebaseUser) {
+                const userDoc = await UsuarioService.getUsuarioByEmail(firebaseUser.email!);
+                const userRole = userDoc.length > 0 ? userDoc[0].papel : 'Colaborador';
+                const userStatus = userDoc.length > 0 ? userDoc[0].status : 'Bloqueado';
+
+                const sessionUser: Usuario = {
+                    uid: firebaseUser.uid,
+                    email: firebaseUser.email!,
+                    nome: firebaseUser.displayName || 'Nome do Usuário',
+                    papel: userRole,
+                    status: userStatus,
+                };
+
+                setUser(sessionUser);
+                setIsAuthenticated(true);
+
+                // usuário estiver bloqueado, redirecionar para uma tela de aviso
+                if (userStatus === 'Bloqueado') {
+                    navigation.navigate('BlockedScreen');
+                }
+            } else {
+                setUser(null);
+                setIsAuthenticated(false);
+            }
+            setIsLoading(false);
+        });
+
+        return unsubscribe;
+    }, []);
 
     const saveSession = async (sessionUser: Usuario, token: string) => {
         try {
@@ -60,17 +84,21 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         try {
             const userCredential = await signInWithEmailAndPassword(auth, email, password);
             const loggedInUser = userCredential.user;
-            const token = await loggedInUser.getIdToken(); // Pega o token de autenticação
+            const token = await loggedInUser.getIdToken();
 
             const userDoc = await UsuarioService.getUsuarioByEmail(loggedInUser.email!);
             const userData = userDoc[0];
+            console.log(userData.status)
 
             if (userData?.status === 'Bloqueado') {
-                navigation.navigate('BlockedScreen');
+
                 // deslogar e limpar o contexto
-                await signOut(auth);
-                setUser(null);
+
                 setIsAuthenticated(false);
+                setUser(null);
+                navigation.navigate('BlockedScreen');
+                await signOut(auth);
+
                 alert('Sua conta está bloqueada. Entre em contato com o administrador.');
             } else {
                 // Salva a sessão e permite o login
@@ -131,37 +159,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     };
 
 
-    useEffect(() => {
-        const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
-            if (firebaseUser) {
-                const userDoc = await UsuarioService.getUsuarioByEmail(firebaseUser.email!);
-                const userRole = userDoc.length > 0 ? userDoc[0].papel : 'Colaborador';
-                const userStatus = userDoc.length > 0 ? userDoc[0].status : 'Bloqueado';
-
-                const sessionUser: Usuario = {
-                    uid: firebaseUser.uid,
-                    email: firebaseUser.email!,
-                    nome: firebaseUser.displayName || 'Nome do Usuário',
-                    papel: userRole,
-                    status: userStatus,
-                };
-
-                setUser(sessionUser);
-                setIsAuthenticated(true);
-
-                // usuário estiver bloqueado, redirecionar para uma tela de aviso
-                if (userStatus === 'Bloqueado') {
-                    navigation.navigate('BlockedScreen');
-                }
-            } else {
-                setUser(null);
-                setIsAuthenticated(false);
-            }
-            setIsLoading(false);
-        });
-
-        return unsubscribe;
-    }, []);
 
 
 

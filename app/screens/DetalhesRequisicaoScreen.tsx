@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ActivityIndicator, TextStyle } from 'react-native';
+import { View, Text, StyleSheet, TextStyle } from 'react-native';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import { Card, DataTable } from 'react-native-paper';
 import RequisicaoComprasService from '../services/RequisicaoComprasService';
@@ -8,6 +8,7 @@ import { RequisicaoCompras, RootStackParamList } from '../types/types';
 import { StackNavigationProp } from '@react-navigation/stack';
 import LoadingIndicator from '../components/LoadingIndicator';
 import { useAuth } from '@/app/context/AuthContext';
+
 type DetalhesRequisicaoScreenNavigationProp = StackNavigationProp<RootStackParamList, 'CotacaoScreen'>;
 
 const DetalhesRequisicaoScreen: React.FC = () => {
@@ -18,37 +19,29 @@ const DetalhesRequisicaoScreen: React.FC = () => {
     const [produtos, setProdutos] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const navigation = useNavigation<DetalhesRequisicaoScreenNavigationProp>();
-    const user = useAuth().user
+    const user = useAuth().user;
 
     useEffect(() => {
+        const unsubscribe = RequisicaoComprasService.listenToRequisicao(colaboradorId, requisicaoId, (requisicaoData) => {
+            setRequisicao(requisicaoData);
+        });
+
         const fetchData = async () => {
             try {
-                const requisicaoData = await RequisicaoComprasService.getRequisicaoDetails(colaboradorId, requisicaoId);
                 const colaboradorData = await RequisicaoComprasService.getColaboradorDetails(colaboradorId);
                 const produtosData = await RequisicaoComprasService.getProdutosByRequisicao(colaboradorId, requisicaoId);
-                setRequisicao(requisicaoData);
                 setColaborador(colaboradorData);
                 setProdutos(produtosData);
-
-
-                if (requisicaoData) {
-                    if (produtosData.length >= 3 && requisicaoData.status !== 'Finalizada') {
-                        await RequisicaoComprasService.updateRequisicaoStatus(colaboradorId, requisicaoId, "Finalizada");
-
-                        // Tipando prevRequisicao como Requisicao
-                        setRequisicao((prevRequisicao: RequisicaoCompras) => ({
-                            ...prevRequisicao,
-                            status: 'Finalizada'
-                        }));
-                    }
-                }
             } catch (error) {
                 console.error('Erro ao buscar dados da requisição: ', error);
             } finally {
                 setLoading(false);
             }
         };
+
         fetchData();
+
+        return () => unsubscribe(); // Certifique-se de limpar o listener
     }, [colaboradorId, requisicaoId]);
 
     const iniciarCotacao = (requisicaoId: string, colaboradorId: string) => {
@@ -111,7 +104,6 @@ const DetalhesRequisicaoScreen: React.FC = () => {
                 ))}
             </DataTable>
 
-
             {user?.papel === 'Administrador' && (
                 <CustomButton
                     title="INICIAR COTAÇÃO"
@@ -128,7 +120,7 @@ const getStatusStyle = (status: string): TextStyle => {
     switch (status) {
         case 'Aberta':
             return { color: 'blue', fontWeight: '700' };
-        case 'Em Cotação':
+        case 'Cotando':
             return { color: 'orange', fontWeight: '700' };
         case 'Finalizada':
             return { color: 'green', fontWeight: '700' };

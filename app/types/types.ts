@@ -159,13 +159,7 @@ export interface Cotacao {
     status: string; // Em Cotação, Fechada
 }
 
-// Tipos para o contexto de autenticação
-export interface AuthContextType {
-    isAuthenticated: boolean;
-    isLoading: boolean;
-    login: (email: string, password: string) => Promise<void>;
-    logout: () => Promise<void>;
-}
+
 
 // Tipos para um formulário de login
 export interface LoginFormValues {
@@ -185,4 +179,12 @@ export interface RequisicaoCompras {
 }
 
 
-
+export interface AuthContextType {
+    user: Usuario | null;
+    isAuthenticated: boolean;
+    isLoading: boolean;
+    login: (email: string, password: string) => Promise<void>;
+    signup: (email: string, password: string, nome: string, papel?: string) => Promise<void>;
+    logout: () => Promise<void>;
+    getAdminToken: () => Promise<string | null>;
+}

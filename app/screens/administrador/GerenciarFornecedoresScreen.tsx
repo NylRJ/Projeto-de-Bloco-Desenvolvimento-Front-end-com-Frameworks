@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, Alert, FlatList } from 'react-native';
-import { Card, Button, Appbar, FAB, IconButton } from 'react-native-paper';
+import { Card, Button, FAB } from 'react-native-paper';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { useNavigation } from '@react-navigation/native';
 import { RootStackParamList } from '../../types/types';
 import FornecedorService from '../../services/fornecedorService';
 import { Fornecedor } from '../../types/types';
+import CustomButton from '@/app/components/CustomButton';
 
 type GerenciarFornecedoresScreenNavigationProp = StackNavigationProp<
     RootStackParamList,
@@ -39,24 +40,31 @@ const GerenciarFornecedoresScreen: React.FC = () => {
         <Card style={styles.card}>
             <Card.Title title={item.nome} subtitle={item.email} />
             <Card.Actions>
-                <IconButton
-                    icon="pencil"
-                    onPress={() => navigation.navigate('EditFornecedor', { id: item.id! })}
-                    style={styles.editButton}
-                />
-                <Button
-                    onPress={() => handleDelete(item.id!)}
-                    color="red"
-                    style={styles.actionButton}
-                >
-                    Excluir
-                </Button>
-                <Button
+                <CustomButton
+                    borderRadius={20}
+                    backgroundColor='#0e4f66'
+                    title='Produto'
+                    icon='plus-circle-outline'
                     onPress={() => navigation.navigate('AssociateProdutoScreen', { fornecedorId: item.id! })}
-                    style={styles.actionButton}
-                >
-                    Associar Produto
-                </Button>
+                />
+
+                <CustomButton
+                    borderRadius={20}
+                    backgroundColor='#0e4f66'
+                    title='Editar'
+                    icon='pencil'
+                    onPress={() => navigation.navigate('EditFornecedor', { id: item.id! })}
+                />
+                <CustomButton
+                    borderRadius={20}
+                    backgroundColor='#fc0828'
+                    title='Excluir'
+                    icon='trash-can'
+                    onPress={() => handleDelete(item.id!)}
+                />
+
+
+
             </Card.Actions>
         </Card>
     );
