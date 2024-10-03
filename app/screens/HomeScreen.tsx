@@ -42,6 +42,7 @@ const HomeScreen: React.FC = () => {
                             <Text> {user?.nome}</Text>
                         </View>
                         {user?.papel === 'Administrador' ? (
+
                             <>
 
                                 <CustomButton
