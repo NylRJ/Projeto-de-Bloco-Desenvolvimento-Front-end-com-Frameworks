@@ -14,16 +14,21 @@ import DetalhesRequisicaoScreen from '../screens/DetalhesRequisicaoScreen';
 import AddProdutoScreen from '../screens/administrador/AddProdutoScreen';
 import CotacaoScreen from '../screens/administrador/CotacaoScreen';
 import AssociateProdutoFornecedorScreen from '../screens/administrador/AssociateProdutoFornecedorScreen';
-
-
+import AdminTabs from '../routes/tab.admin.routes'
 import HomeScreen from '../screens/HomeScreen';
 
 
 const AdminStack = createNativeStackNavigator();
 
+
 const AdminRoutes: React.FC = () => {
     return (
         <AdminStack.Navigator>
+            <AdminStack.Screen
+                name="AdminTabs"
+                component={AdminTabs}
+                options={{ headerShown: false }} // Esconde o header, pois será controlado nas Tabs
+            />
             <AdminStack.Screen name="HomeScreen" component={HomeScreen} options={{ title: 'Home - Administrador' }}
             />
             <AdminStack.Screen

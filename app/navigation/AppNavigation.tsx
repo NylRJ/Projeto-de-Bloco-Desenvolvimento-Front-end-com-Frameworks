@@ -3,6 +3,7 @@ import { useAuth } from '../context/AuthContext';
 import { NavigationContainer } from '@react-navigation/native';
 import AuthRoutes from '../routes/auth.routes';
 import AdminRoutes from '../routes/admin.routes';
+import AdminRoutes1 from '../routes/admin.routes';
 import ColaboradorRoutes from '../routes/collaborator.routes';
 
 const AppNavigation: React.FC = () => {
