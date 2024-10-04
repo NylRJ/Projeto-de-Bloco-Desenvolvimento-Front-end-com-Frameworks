@@ -32,6 +32,7 @@ const DetalhesRequisicaoScreen: React.FC = () => {
                 const produtosData = await RequisicaoComprasService.getProdutosByRequisicao(colaboradorId, requisicaoId);
                 setColaborador(colaboradorData);
                 setProdutos(produtosData);
+                produtosData.map((p: any) => console.log(p))
             } catch (error) {
                 console.error('Erro ao buscar dados da requisição: ', error);
             } finally {
@@ -97,7 +98,7 @@ const DetalhesRequisicaoScreen: React.FC = () => {
 
                 {produtos.map((produto: any) => (
                     <DataTable.Row key={produto.id}>
-                        <DataTable.Cell>{produto.nome}</DataTable.Cell>
+                        <DataTable.Cell>{produto.produtoName}</DataTable.Cell>
                         <DataTable.Cell numeric>{produto.quantidade}</DataTable.Cell>
                         <DataTable.Cell numeric>{produto.valor || 'N/A'}</DataTable.Cell>
                     </DataTable.Row>
@@ -109,7 +110,7 @@ const DetalhesRequisicaoScreen: React.FC = () => {
                     title="INICIAR COTAÇÃO"
                     onPress={() => iniciarCotacao(requisicaoId, colaboradorId)}
                     icon="shopping"
-                    style={styles.button}
+
                 />
             )}
         </View>
