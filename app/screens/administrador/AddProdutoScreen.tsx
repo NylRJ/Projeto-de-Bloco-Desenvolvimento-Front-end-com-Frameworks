@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { View, TextInput, Alert, StyleSheet, Image, Platform, ScrollView } from 'react-native'; // Importa o Platform
+import { View, TextInput, Alert, StyleSheet, Image, Platform, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Picker } from '@react-native-picker/picker';
 import * as ImagePicker from 'expo-image-picker';
-import { Camera } from 'expo-camera'; // Expo Camera para captura de imagem
+import { Camera } from 'expo-camera';
 import ProdutoService from '../../services/produtoService';
 import CategoriaService from '../../services/categoriaService';
 import { Categoria, Subcategoria, ProdutoBase } from '../../types/types';
@@ -21,12 +21,12 @@ const AddProdutoScreen: React.FC = () => {
     const [categorias, setCategorias] = useState<Categoria[]>([]);
     const [subcategorias, setSubcategorias] = useState<Subcategoria[]>([]);
     const [isLoading, setIsLoading] = useState(false);
-    const [hasPermission, setHasPermission] = useState<boolean | null>(null); // Estado para a permissão da câmera
+    const [hasPermission, setHasPermission] = useState<boolean | null>(null);
     const navigation = useNavigation();
 
-    // Solicita permissão para usar a câmera
+
     useEffect(() => {
-        if (Platform.OS !== 'web') { // Somente solicita permissão se não estiver no ambiente web
+        if (Platform.OS !== 'web') {
             (async () => {
                 const { status } = await Camera.requestCameraPermissionsAsync();
                 setHasPermission(status === 'granted');
@@ -52,7 +52,7 @@ const AddProdutoScreen: React.FC = () => {
         }
     }, [categoriaId]);
 
-    // Função para abrir a galeria de fotos
+
     const pickImageFromGallery = async () => {
         const result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.Images,
@@ -66,10 +66,10 @@ const AddProdutoScreen: React.FC = () => {
         }
     };
 
-    // Função para capturar uma foto usando a câmera
+
     const takePhotoWithCamera = async () => {
         if (hasPermission === null) {
-            return; // Se a permissão ainda não foi solicitada
+            return;
         }
 
         if (hasPermission === false) {
@@ -95,7 +95,7 @@ const AddProdutoScreen: React.FC = () => {
         }
 
         try {
-            setIsLoading(true); // Ativar o loading
+            setIsLoading(true);
 
             const nomeCategoria = await CategoriaService.getCategoriaNome(categoriaId);
             setCategoriaNome(nomeCategoria);
@@ -176,7 +176,7 @@ const AddProdutoScreen: React.FC = () => {
                         style={styles.button}
                     />
 
-                    {/* Só exibe o botão de capturar com câmera se não estiver na web */}
+
                     {Platform.OS !== 'web' && (
                         <CustomButton
                             title="Capturar com Câmera"
@@ -204,7 +204,7 @@ const styles = StyleSheet.create({
         padding: 20,
     },
     scrollViewContainer: {
-        flexGrow: 1, // Isso garante que a ScrollView cresça com o conteúdo
+        flexGrow: 1,
         justifyContent: 'center',
     },
     input: {

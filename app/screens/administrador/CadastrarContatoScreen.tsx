@@ -30,7 +30,7 @@ const CadastrarContatoScreen: React.FC = () => {
             };
             await FornecedorService.createContatoForFornecedor(fornecedorId, contatoData);
             Alert.alert('Sucesso', 'Contato cadastrado com sucesso!');
-            navigation.goBack(); // Volta para a tela anterior
+            navigation.goBack();
         } catch (error) {
             Alert.alert('Erro', 'Erro ao cadastrar o contato.');
         } finally {

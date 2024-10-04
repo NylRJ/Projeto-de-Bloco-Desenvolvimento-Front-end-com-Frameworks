@@ -2,7 +2,7 @@ import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import LoginScreen from '../screens/login/LoginScreen';
 import SignupScreen from '../screens/login/SignupScreen';
-import BlockedScreen from '../screens/BlockedScreen';
+
 
 
 
@@ -21,11 +21,7 @@ const AuthRoutes: React.FC = () => {
                 component={SignupScreen}
                 options={{ headerShown: false }}
             />
-            <AuthStack.Screen
-                name="BlockedScreen"
-                component={BlockedScreen}
-                options={{ headerShown: false }}
-            />
+
 
         </AuthStack.Navigator>
     );

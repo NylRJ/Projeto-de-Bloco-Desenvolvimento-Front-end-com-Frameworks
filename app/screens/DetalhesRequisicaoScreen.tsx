@@ -45,10 +45,11 @@ const DetalhesRequisicaoScreen: React.FC = () => {
         return () => unsubscribe(); // Certifique-se de limpar o listener
     }, [colaboradorId, requisicaoId]);
 
-    const iniciarCotacao = (requisicaoId: string, colaboradorId: string) => {
+    const iniciarCotacao = async (requisicaoId: string, colaboradorId: string) => {
+        await RequisicaoComprasService.updateRequisicaoStatus(colaboradorId, requisicaoId, 'Cotando');
         navigation.navigate('CotacaoScreen', {
             requisicaoId: requisicaoId,
-            colaboradorId: colaboradorId
+            colaboradorId: colaboradorId,
         });
     };
 
@@ -107,9 +108,10 @@ const DetalhesRequisicaoScreen: React.FC = () => {
 
             {user?.papel === 'Administrador' && (
                 <CustomButton
-                    title="INICIAR COTAÇÃO"
+                    title={requisicao.status === 'Finalizada' ? 'Finalizada' : 'Iniciar Cotação'}
                     onPress={() => iniciarCotacao(requisicaoId, colaboradorId)}
                     icon="shopping"
+                    disabled={requisicao.status === 'Finalizada'}
 
                 />
             )}

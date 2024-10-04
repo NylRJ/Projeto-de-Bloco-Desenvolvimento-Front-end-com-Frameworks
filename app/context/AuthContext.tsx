@@ -139,7 +139,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             const userCredential = await createUserWithEmailAndPassword(auth, email, password);
             const uid = userCredential.user.uid;
 
-            // Atualiza o perfil do usuário com o displayName
+
             await updateProfile(userCredential.user, { displayName: nome });
 
             const newUser: Usuario = {
