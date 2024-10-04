@@ -6,21 +6,50 @@ import MinhasRequisicoesScreen from '../screens/colaborador/MinhasRequisicoesScr
 import BlockedScreen from '../screens/BlockedScreen';
 import DetalhesRequisicaoScreen from '../screens/DetalhesRequisicaoScreen';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import TabBarIcon from '../components/TabBarIcon';
 
 
 
 const Tab = createBottomTabNavigator();
-
+const selectedColor = '#005780';
+const defaultColor = '#8e8e93';
 
 const ColaboradorStack = createNativeStackNavigator();
 
 const ColaboradorRoutes: React.FC = () => (
     <Tab.Navigator>
-        <Tab.Screen name="Home" component={HomeScreen} options={{ title: 'Home Colaborador' }} />
-        <Tab.Screen name="CriarRequisicaoScreen" component={SelecionarProdutosScreen} options={{ title: 'Criar Requisicao' }} />
-        <Tab.Screen name="MinhasRequisicoesScreen" component={MinhasRequisicoesScreen} options={{ title: 'Minhas Requisicoes' }} />
-        <Tab.Screen name="BlockedScreen" component={BlockedScreen} options={{ title: 'Bloqueado' }} />
-        <Tab.Screen name="DetalhesRequisicaoScreen" component={DetalhesRequisicaoScreen} options={{ title: 'Detalhes' }} />
+        <Tab.Screen
+            name="Home"
+            component={HomeScreen}
+            options={{
+                title: 'Home',
+                tabBarIcon: ({ focused }) => (
+                    <TabBarIcon name={focused ? 'home' : 'home-outline'} color={focused ? selectedColor : defaultColor} />
+                ),
+            }}
+        />
+        <Tab.Screen
+            name="CriarRequisicaoScreen"
+            component={SelecionarProdutosScreen}
+            options={{
+                title: 'Criar Requisicao',
+                tabBarIcon: ({ color, focused }) => (
+                    <TabBarIcon name={focused ? 'add-circle' : 'add-circle-outline'} color={focused ? selectedColor : defaultColor} />
+                ),
+            }}
+        />
+        <Tab.Screen
+            name="MinhasRequisicoesScreen"
+            component={MinhasRequisicoesScreen}
+            options={{
+                title: 'Minhas Requisicoes',
+                tabBarIcon: ({ color, focused }) => (
+                    <TabBarIcon name={focused ? 'list-circle' : 'list-circle-outline'} color={focused ? selectedColor : defaultColor} />
+                ),
+            }}
+        />
+
+
     </Tab.Navigator>
 );
 

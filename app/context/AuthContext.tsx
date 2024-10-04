@@ -40,6 +40,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                     nome: firebaseUser.displayName || 'Nome do Usuário',
                     papel: userRole,
                     status: userStatus,
+                    photoURL: firebaseUser.photoURL || "",
                 };
 
                 setUser(sessionUser);
@@ -108,6 +109,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                     nome: loggedInUser.displayName || 'Nome do Usuário',
                     papel: userData?.papel || 'Colaborador',
                     status: userData?.status || 'Liberado',
+                    photoURL: userData.photoURL || "",
                 };
 
                 setUser(sessionUser);
@@ -146,6 +148,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                 nome,
                 papel,
                 status: 'Liberado',
+                photoURL: userCredential.user.photoURL || "",
             };
 
             const userDocRef = doc(db, `usuarios/${uid}`);

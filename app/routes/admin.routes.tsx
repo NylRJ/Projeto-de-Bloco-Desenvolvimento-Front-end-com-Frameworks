@@ -16,6 +16,7 @@ import CotacaoScreen from '../screens/administrador/CotacaoScreen';
 import AssociateProdutoFornecedorScreen from '../screens/administrador/AssociateProdutoFornecedorScreen';
 import AdminTabs from '../routes/tab.admin.routes'
 import HomeScreen from '../screens/HomeScreen';
+import ProfileScreen from '../screens/ProfileScreen';
 
 
 const AdminStack = createNativeStackNavigator();
@@ -97,6 +98,11 @@ const AdminRoutes: React.FC = () => {
                 name="DetalhesRequisicaoScreen"
                 component={DetalhesRequisicaoScreen}
                 options={{ title: 'Detalhes' }}
+            />
+            <AdminStack.Screen
+                name="ProfileScreen"
+                component={ProfileScreen}
+                options={{ title: 'Perfil' }}
             />
 
 

@@ -1,33 +1,44 @@
+import { DefaultTheme as PaperLightTheme, MD3DarkTheme } from 'react-native-paper';
+import { DarkTheme as NavigationDarkTheme, DefaultTheme as NavigationDefaultTheme } from '@react-navigation/native';
+import merge from 'deepmerge';
 
+// Adaptação do tema para combinar o React Native Paper e React Navigation
+import { adaptNavigationTheme } from 'react-native-paper';
 
-import { DefaultTheme, MD3DarkTheme } from 'react-native-paper';
+const { LightTheme: NavigationLightTheme, DarkTheme: NavigationDarkThemeAdapted } = adaptNavigationTheme({
+    reactNavigationLight: NavigationDefaultTheme,
+    reactNavigationDark: NavigationDarkTheme,
+});
 
-export const lightTheme = {
-    ...DefaultTheme,
+// Tema Claro
+export const lightTheme = merge(PaperLightTheme, {
+    ...NavigationLightTheme,
     colors: {
-        ...DefaultTheme.colors,
+        ...NavigationLightTheme.colors,
         primary: '#005780', // Azul Principal
-        accent: '#4CAF50', // Verde
+        accent: '#4CAF50',  // Verde para ações
         background: '#FFFFFF', // Fundo branco padrão
-        surface: '#FFFFFF', // Cor de superfície, pode ser branco
-        text: '#000000', // Preto
-        placeholder: '#5E6A71', // Cinza Escuro
-        disabled: '#B0BEC5', // Cinza Claro
+        surface: '#FFFFFF',   // Cor de superfície
+        text: '#000000',      // Texto preto
+        placeholder: '#5E6A71', // Cinza escuro para placeholders
+        disabled: '#B0BEC5',  // Cinza claro para botões desativados
     },
-};
+});
 
-export const darkTheme = {
-    ...MD3DarkTheme,
+// Tema Escuro
+export const darkTheme = merge(MD3DarkTheme, {
+    ...NavigationDarkThemeAdapted,
     colors: {
-        ...MD3DarkTheme.colors,
-        primary: '#bb86fc',
-        accent: '#03dac6',
-        background: '#121212',
-        surface: '#121212',
-        text: '#ffffff',
-        disabled: '#3e3e3e',
+        ...NavigationDarkThemeAdapted.colors,
+        primary: '#bb86fc',   // Roxo para o tema escuro
+        accent: '#03dac6',    // Cores secundárias no tema escuro
+        background: '#121212', // Fundo padrão escuro
+        surface: '#121212',    // Superfícies escuras
+        text: '#ffffff',       // Texto branco
+        placeholder: '#888888', // Placeholder cinza claro
+        disabled: '#3e3e3e',   // Cinza para botões desativados
     },
-};
+});
 
-
-export default lightTheme;  
+// Exporta o tema claro como padrão
+export default lightTheme;

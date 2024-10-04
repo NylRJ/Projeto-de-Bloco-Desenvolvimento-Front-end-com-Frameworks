@@ -5,6 +5,7 @@ import SignupScreen from '../screens/login/SignupScreen';
 import BlockedScreen from '../screens/BlockedScreen';
 
 
+
 const AuthStack = createNativeStackNavigator();
 
 const AuthRoutes: React.FC = () => {
@@ -25,6 +26,7 @@ const AuthRoutes: React.FC = () => {
                 component={BlockedScreen}
                 options={{ headerShown: false }}
             />
+
         </AuthStack.Navigator>
     );
 };

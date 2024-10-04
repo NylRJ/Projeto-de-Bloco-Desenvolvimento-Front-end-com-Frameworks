@@ -17,7 +17,7 @@ export type RootStackParamList = {
     MinhasRequisicoesScreen: undefined;
     FornecedoresScreen: undefined;
     EditFornecedorScreen: { id: string };
-    ProfileScreen: { userId: string };
+    ProfileScreen: undefined;
     EditProdutoScreen: { id: string };
     EditProduto: { id: string };
     EditFornecedor: { id: string };
@@ -43,8 +43,9 @@ export interface Usuario {
     uid: string;
     nome: string;
     email: string;
-    papel: string; // Exemplo: 'Administrador' ou 'Colaborador'
+    papel: string;
     status: 'Liberado' | 'Bloqueado';
+    photoURL: string;
 }
 
 

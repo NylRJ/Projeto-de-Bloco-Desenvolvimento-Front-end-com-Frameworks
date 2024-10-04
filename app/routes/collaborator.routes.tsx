@@ -10,7 +10,10 @@ import AdminTabs from '../routes/tab.ColaboradorRoutes';
 const ColaboradorStack = createNativeStackNavigator();
 
 const ColaboradorRoutes: React.FC = () => (
-    <ColaboradorStack.Navigator>
+    <ColaboradorStack.Navigator
+
+
+    >
         <ColaboradorStack.Screen
             name="AdminTabs"
             component={AdminTabs}

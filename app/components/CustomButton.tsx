@@ -34,6 +34,7 @@ const CustomButton: React.FC<CustomButtonProps> = ({
             style={[styles.button, { backgroundColor, borderRadius }, style]} // Aplica a cor de fundo e borda
             contentStyle={styles.buttonContent}
             labelStyle={[styles.buttonLabel, { color: color }]}  // Aplica a cor do texto
+
         >
             {title}
         </Button>
