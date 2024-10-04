@@ -97,7 +97,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
                 setIsAuthenticated(false);
                 setUser(null);
-                navigation.navigate('BlockedScreen');
+                navigation.navigate('teste');
                 await signOut(auth);
 
                 alert('Sua conta está bloqueada. Entre em contato com o administrador.');
@@ -122,6 +122,44 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         }
     };
 
+    /*const login = async (email: string, password: string) => {
+        try {
+           
+            const userDoc = await UsuarioService.getUsuarioByEmail(email);
+            const userData = userDoc[0];
+
+            // Se o usuário estiver bloqueado, não tenta realizar o login e redireciona para a tela de bloqueio
+            if (userData?.status === 'Bloqueado') {
+                setIsAuthenticated(false);
+                setUser(null);
+                navigation.navigate('BlockedScreen');
+                alert('Sua conta está bloqueada. Entre em contato com o administrador.');
+                return; // Interrompe o processo de login
+            }
+
+            // Se o usuário não estiver bloqueado, prossegue com o login no Firebase
+            const userCredential = await signInWithEmailAndPassword(auth, email, password);
+            const loggedInUser = userCredential.user;
+            const token = await loggedInUser.getIdToken();
+
+            const sessionUser: Usuario = {
+                uid: loggedInUser.uid,
+                email: loggedInUser.email!,
+                nome: loggedInUser.displayName || 'Nome do Usuário',
+                papel: userData?.papel || 'Colaborador',
+                status: userData?.status || 'Liberado',
+                photoURL: userData.photoURL || "",
+            };
+
+            setUser(sessionUser);
+            setIsAuthenticated(true);
+
+            await saveSession(sessionUser, token); // Salva a sessão no AsyncStorage
+        } catch (error) {
+            console.error('Erro ao fazer login:', error);
+            alert('Erro ao realizar login. Verifique suas credenciais.');
+        }
+    }; */
 
     const logout = async () => {
         try {
