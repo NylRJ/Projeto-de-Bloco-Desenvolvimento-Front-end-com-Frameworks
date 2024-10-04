@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, Alert, TouchableOpacity, Image, Dimensions } from 'react-native';
+import { View, StyleSheet, Alert, TouchableOpacity, Image, Dimensions, ScrollView } from 'react-native';
 import { Text, TextInput } from 'react-native-paper';
 import { useAuth } from '../../context/AuthContext';
 import { useNavigation } from '@react-navigation/native';
@@ -39,7 +39,7 @@ const LoginScreen: React.FC = () => {
             {isLoading ? (
                 <LoadingIndicator text="Verificando Credenciais" />
             ) : (
-                <View>
+                <ScrollView>
                     <Image source={require('../../images/logo.png')} style={styles.logo} />
                     <TextInput
                         label="Email"
@@ -67,7 +67,7 @@ const LoginScreen: React.FC = () => {
                     <TouchableOpacity onPress={handleSignupNavigation}>
                         <Text style={styles.signupText}>Ainda não tem uma conta? Crie a sua!</Text>
                     </TouchableOpacity>
-                </View>
+                </ScrollView>
             )}
         </View>
     );

@@ -2,20 +2,20 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, Alert, TouchableOpacity } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { Avatar, Button, Switch, useTheme } from 'react-native-paper';
-import { uploadImageAsync } from '../services/firebaseStorageService'; // Função para upload no Firebase Storage
-import { useThemeContext } from '../context/ThemeContext'; // Importa o contexto de tema
+import { uploadImageAsync } from '../services/firebaseStorageService';
+import { useThemeContext } from '../context/ThemeContext';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../types/types';
 import { useNavigation } from '@react-navigation/native';
-import LoadingIndicator from '../components/LoadingIndicator'; // Importe o componente LoadingIndicator
+import LoadingIndicator from '../components/LoadingIndicator';
 
-type HomeScreenNavigationProp = StackNavigationProp<RootStackParamList, 'ProfileScreen'>;
+type ProfileScreenNavigationProp = StackNavigationProp<RootStackParamList, 'ProfileScreen'>;
 
 const ProfileScreen: React.FC = () => {
     const { isThemeDark, toggleTheme } = useThemeContext(); // Usa o contexto de tema
     const [imageUri, setImageUri] = useState<string | null>(null);
     const { colors } = useTheme(); // Obtém as cores do tema atual
-    const navigation = useNavigation<HomeScreenNavigationProp>();
+    const navigation = useNavigation<ProfileScreenNavigationProp>();
     const [loading, setLoading] = useState(false); // Controle de carregamento
 
     // Função para selecionar uma imagem da galeria
@@ -27,7 +27,6 @@ const ProfileScreen: React.FC = () => {
             quality: 1,
         });
 
-        // Verifica se a seleção foi cancelada
         if (!pickerResult.canceled) {
             const selectedImage = pickerResult.assets[0];
             setImageUri(selectedImage.uri);

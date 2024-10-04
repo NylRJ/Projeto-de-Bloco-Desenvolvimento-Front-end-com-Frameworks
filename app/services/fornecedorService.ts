@@ -35,6 +35,8 @@ class FornecedorService {
     }
 
     async getProdutosDeFornecedores(): Promise<any[]> {
+
+        console.log("Get Protuto Fornecedor")
         const fornecedoresSnapshot = await getDocs(collection(db, 'fornecedores'));
         let produtosCompletos: any[] = [];
 
@@ -63,6 +65,7 @@ class FornecedorService {
                 }
             }
         }
+        produtosCompletos.map((p) => console.log(p))
 
         return produtosCompletos; // Retorna a lista de todos os produtos com detalhes
     }
