@@ -19,7 +19,7 @@ const ButtonComponent: React.FC<ButtonComponentProps> = ({
     label,
     mode = 'contained',
     icon,
-    color = '#6200ee', // Cor padrão
+    color = '#6200ee',
     loading = false,
     disabled = false,
     style = {}
@@ -31,8 +31,8 @@ const ButtonComponent: React.FC<ButtonComponentProps> = ({
             onPress={onPress}
             loading={loading}
             disabled={disabled}
-            style={[styles.button, style]} // Permitindo a adição de estilos personalizados
-            contentStyle={styles.content} // Personalizando o conteúdo interno
+            style={[styles.button, style]}
+            contentStyle={styles.content}
             color={color}
         >
             {label}

@@ -70,6 +70,11 @@ const HomeScreen: React.FC = () => {
                                     onPress={() => navigation.navigate('AdminRequisicoesScreen')}
                                     icon="cart-plus"
                                 />
+                                <CustomButton
+                                    title="Configurações"
+                                    onPress={() => navigation.navigate('ProfileScreen')}
+                                    icon="cellphone-settings"
+                                />
                             </>
                         ) : (
                             <>

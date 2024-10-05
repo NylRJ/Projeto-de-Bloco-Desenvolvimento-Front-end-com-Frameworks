@@ -16,6 +16,8 @@ import CotacaoScreen from '../screens/administrador/CotacaoScreen';
 import AssociateProdutoFornecedorScreen from '../screens/administrador/AssociateProdutoFornecedorScreen';
 import AdminTabs from '../routes/tab.admin.routes'
 import HomeScreen from '../screens/HomeScreen';
+import PasswordRecoveryScreen from '../screens/login/forgotPasswordScreen';
+import ProfileScreen from '../screens/ProfileScreen';
 
 
 const AdminStack = createNativeStackNavigator();
@@ -27,7 +29,7 @@ const AdminRoutes: React.FC = () => {
             <AdminStack.Screen
                 name="AdminTabs"
                 component={AdminTabs}
-                options={{ headerShown: false }} // Esconde o header, pois será controlado nas Tabs
+                options={{ headerShown: false }}
             />
             <AdminStack.Screen name="HomeScreen" component={HomeScreen} options={{ title: 'Home - Administrador' }}
             />
@@ -97,6 +99,16 @@ const AdminRoutes: React.FC = () => {
                 name="DetalhesRequisicaoScreen"
                 component={DetalhesRequisicaoScreen}
                 options={{ title: 'Detalhes' }}
+            />
+            <AdminStack.Screen
+                name="ProfileScreen"
+                component={ProfileScreen}
+                options={{ title: 'Perfil' }}
+            />
+            <AdminStack.Screen
+                name="PasswordRecoveryScreen"
+                component={PasswordRecoveryScreen}
+                options={{ title: 'Senha' }}
             />
 
 

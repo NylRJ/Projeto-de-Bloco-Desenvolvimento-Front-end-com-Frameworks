@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { View, TextInput, Button, Alert, StyleSheet, Image } from 'react-native';
+import { View, TextInput, Alert, StyleSheet, Image, Platform, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Picker } from '@react-native-picker/picker';
 import * as ImagePicker from 'expo-image-picker';
+import { Camera } from 'expo-camera';
 import ProdutoService from '../../services/produtoService';
 import CategoriaService from '../../services/categoriaService';
 import { Categoria, Subcategoria, ProdutoBase } from '../../types/types';
@@ -20,7 +21,18 @@ const AddProdutoScreen: React.FC = () => {
     const [categorias, setCategorias] = useState<Categoria[]>([]);
     const [subcategorias, setSubcategorias] = useState<Subcategoria[]>([]);
     const [isLoading, setIsLoading] = useState(false);
+    const [hasPermission, setHasPermission] = useState<boolean | null>(null);
     const navigation = useNavigation();
+
+
+    useEffect(() => {
+        if (Platform.OS !== 'web') {
+            (async () => {
+                const { status } = await Camera.requestCameraPermissionsAsync();
+                setHasPermission(status === 'granted');
+            })();
+        }
+    }, []);
 
     useEffect(() => {
         const fetchCategorias = async () => {
@@ -41,9 +53,31 @@ const AddProdutoScreen: React.FC = () => {
     }, [categoriaId]);
 
 
-    const pickImage = async () => {
+    const pickImageFromGallery = async () => {
         const result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            allowsEditing: true,
+            aspect: [4, 3],
+            quality: 1,
+        });
+
+        if (!result.canceled) {
+            setImagem(result.assets[0].uri);
+        }
+    };
+
+
+    const takePhotoWithCamera = async () => {
+        if (hasPermission === null) {
+            return;
+        }
+
+        if (hasPermission === false) {
+            Alert.alert('Permissão negada', 'Você precisa permitir o acesso à câmera.');
+            return;
+        }
+
+        const result = await ImagePicker.launchCameraAsync({
             allowsEditing: true,
             aspect: [4, 3],
             quality: 1,
@@ -61,12 +95,10 @@ const AddProdutoScreen: React.FC = () => {
         }
 
         try {
-            setIsLoading(true); // Ativar o loading
-
+            setIsLoading(true);
 
             const nomeCategoria = await CategoriaService.getCategoriaNome(categoriaId);
             setCategoriaNome(nomeCategoria);
-
 
             const fotoUrl = await uploadImageAsync(imagem, nome);
 
@@ -81,10 +113,8 @@ const AddProdutoScreen: React.FC = () => {
                 fotoUrl,
             };
 
-
             const produtoId = await ProdutoService.addProduto(novoProduto, imagem);
             Alert.alert('Sucesso', 'Produto adicionado com sucesso!');
-
 
             setTimeout(() => {
                 navigation.goBack();
@@ -102,7 +132,8 @@ const AddProdutoScreen: React.FC = () => {
             {isLoading ? (
                 <LoadingIndicator text="Salvando produto..." />
             ) : (
-                <>
+                <ScrollView contentContainerStyle={styles.scrollViewContainer}
+                    keyboardShouldPersistTaps="handled" >
                     <TextInput
                         style={styles.input}
                         placeholder="Nome do Produto"
@@ -139,11 +170,22 @@ const AddProdutoScreen: React.FC = () => {
                     </Picker>
 
                     <CustomButton
-                        title="Escolher Imagem"
-                        onPress={pickImage}
-                        icon="camera"
+                        title="Escolher da Galeria"
+                        onPress={pickImageFromGallery}
+                        icon="image"
                         style={styles.button}
                     />
+
+
+                    {Platform.OS !== 'web' && (
+                        <CustomButton
+                            title="Capturar com Câmera"
+                            onPress={takePhotoWithCamera}
+                            icon="camera"
+                            style={styles.button}
+                        />
+                    )}
+
                     {imagem && <Image source={{ uri: imagem }} style={styles.image} />}
                     <CustomButton
                         title="Salvar"
@@ -151,8 +193,7 @@ const AddProdutoScreen: React.FC = () => {
                         icon="content-save"
                         style={styles.button}
                     />
-
-                </>
+                </ScrollView>
             )}
         </View>
     );
@@ -161,6 +202,10 @@ const AddProdutoScreen: React.FC = () => {
 const styles = StyleSheet.create({
     container: {
         padding: 20,
+    },
+    scrollViewContainer: {
+        flexGrow: 1,
+        justifyContent: 'center',
     },
     input: {
         marginBottom: 20,

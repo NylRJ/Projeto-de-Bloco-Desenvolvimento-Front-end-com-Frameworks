@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, Alert, TouchableOpacity, Image, Dimensions } from 'react-native';
+import { View, StyleSheet, Alert, TouchableOpacity, Image, Dimensions, ScrollView } from 'react-native';
 import { Text, TextInput } from 'react-native-paper';
 import { useAuth } from '../../context/AuthContext';
 import { useNavigation } from '@react-navigation/native';
@@ -11,7 +11,7 @@ import CustomButton from '../../components/CustomButton';
 type LoginScreenNavigationProp = StackNavigationProp<AuthStackParamList, 'Login'>;
 
 const LoginScreen: React.FC = () => {
-    const { login } = useAuth();
+    const { login, user } = useAuth();
     const navigation = useNavigation<LoginScreenNavigationProp>();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -20,8 +20,10 @@ const LoginScreen: React.FC = () => {
     const handleLogin = async () => {
         try {
             setIsLoading(true);
-            await login(email, password);
-            Alert.alert('Sucesso', 'Login realizado com sucesso!');
+            await login(email, password); // O login já fará a verificação do bloqueio
+            if (user?.status === 'Bloqueado') {
+                console.log("Bloqueadooo")
+            }
         } catch (error) {
             console.error('Erro ao realizar login:', error);
             Alert.alert('Erro', 'Não foi possível realizar o login. Verifique suas credenciais.');
@@ -29,6 +31,7 @@ const LoginScreen: React.FC = () => {
             setIsLoading(false);
         }
     };
+
 
     const handleSignupNavigation = () => {
         navigation.navigate('Signup');
@@ -39,7 +42,7 @@ const LoginScreen: React.FC = () => {
             {isLoading ? (
                 <LoadingIndicator text="Verificando Credenciais" />
             ) : (
-                <View>
+                <ScrollView>
                     <Image source={require('../../images/logo.png')} style={styles.logo} />
                     <TextInput
                         label="Email"
@@ -67,7 +70,7 @@ const LoginScreen: React.FC = () => {
                     <TouchableOpacity onPress={handleSignupNavigation}>
                         <Text style={styles.signupText}>Ainda não tem uma conta? Crie a sua!</Text>
                     </TouchableOpacity>
-                </View>
+                </ScrollView>
             )}
         </View>
     );

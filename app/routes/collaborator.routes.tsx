@@ -5,12 +5,16 @@ import SelecionarProdutosScreen from '../screens/colaborador/CriarRequisicaoScre
 import MinhasRequisicoesScreen from '../screens/colaborador/MinhasRequisicoesScreen';
 import DetalhesRequisicaoScreen from '../screens/DetalhesRequisicaoScreen';
 import AdminTabs from '../routes/tab.ColaboradorRoutes';
+import BlockedScreen from '../screens/BlockedScreen';
 
 
 const ColaboradorStack = createNativeStackNavigator();
 
 const ColaboradorRoutes: React.FC = () => (
-    <ColaboradorStack.Navigator>
+    <ColaboradorStack.Navigator
+
+
+    >
         <ColaboradorStack.Screen
             name="AdminTabs"
             component={AdminTabs}
@@ -20,6 +24,8 @@ const ColaboradorRoutes: React.FC = () => (
         <ColaboradorStack.Screen name="CriarRequisicaoScreen" component={SelecionarProdutosScreen} options={{ title: 'Criar Requisicao' }} />
         <ColaboradorStack.Screen name="MinhasRequisicoesScreen" component={MinhasRequisicoesScreen} options={{ title: 'Minhas Requisicoes' }} />
         <ColaboradorStack.Screen name="DetalhesRequisicaoScreen" component={DetalhesRequisicaoScreen} options={{ title: 'Detalhes' }} />
+        <ColaboradorStack.Screen name="BlockedScreen" component={BlockedScreen} options={{ title: 'Bloqueada' }} />
+
     </ColaboradorStack.Navigator>
 );
 

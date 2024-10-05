@@ -24,7 +24,7 @@ const CotacaoScreen: React.FC = () => {
                 const produtosCompletos = await FornecedorService.getProdutosDeFornecedores();
                 setProdutos(produtosCompletos);
 
-                // Atualiza o status da requisição para 'Cotando' quando iniciar a tela
+
                 await RequisicaoComprasService.updateRequisicaoStatus(colaboradorId, requisicaoId, 'Cotando');
             } catch (error) {
                 console.error('Erro ao buscar produtos: ', error);
@@ -73,7 +73,7 @@ const CotacaoScreen: React.FC = () => {
 
         try {
 
-            //produtosSelecionados.map((p) => console.log(p))
+
             await Promise.all(produtosSelecionados.map(async (produto) => {
 
                 await RequisicaoComprasService.createCotacao(requisicaoId, colaboradorId, {

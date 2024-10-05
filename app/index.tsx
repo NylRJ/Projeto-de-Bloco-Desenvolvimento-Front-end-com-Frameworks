@@ -5,9 +5,8 @@ import AppNavigation from './navigation/AppNavigation';
 import { AuthProvider, useAuth } from './context/AuthContext';
 
 import { PaperProvider } from 'react-native-paper';
-
-import theme from './theme/Theme';
 import { NavigationContainer } from '@react-navigation/native';
+import { PreferencesProvider } from './context/ThemeContext';
 
 
 
@@ -15,11 +14,11 @@ import { NavigationContainer } from '@react-navigation/native';
 const App = () => {
     return (
         <AuthProvider>
-            <PaperProvider theme={theme}>
+            <PreferencesProvider>
 
                 <AppNavigation />
 
-            </PaperProvider>
+            </PreferencesProvider>
         </AuthProvider>
     );
 };

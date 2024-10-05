@@ -1,5 +1,5 @@
-import { Modal, Button, Text, Portal, Provider } from 'react-native-paper';
 import React from 'react';
+import { Modal, Button, Text, Portal, Provider } from 'react-native-paper';
 import { View, StyleSheet } from 'react-native';
 
 interface ConfirmModalProps {
@@ -39,8 +39,14 @@ const styles = StyleSheet.create({
     modalContainer: {
         backgroundColor: 'white',
         padding: 20,
-        marginHorizontal: 20,
         borderRadius: 10,
+        alignItems: 'center',
+        justifyContent: 'center',
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        transform: [{ translateX: -150 }, { translateY: -150 }],
+        width: 400,
     },
     content: {
         alignItems: 'center',

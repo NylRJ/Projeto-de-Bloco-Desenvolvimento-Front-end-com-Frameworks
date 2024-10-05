@@ -6,6 +6,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { useNavigation } from '@react-navigation/native';
 import { RootStackParamList } from '@/app/types/types';
 import LoadingIndicator from '@/app/components/LoadingIndicator';
+import CustomButton from '@/app/components/CustomButton';
 
 type AdminRequisicoesScreenNavigationProp = StackNavigationProp<
     RootStackParamList,
@@ -63,26 +64,28 @@ const AdminRequisicoesScreen: React.FC = () => {
                                         icon={requisicao.status === 'Finalizada' ? 'check-circle' : 'progress-clock'}
                                         iconColor={getStatusColor(requisicao.status)}
                                     />
-                                    <Button
-                                        mode="contained"
+
+                                    <CustomButton
+                                        title={requisicao.status === 'Finalizada' ? 'Finalizada' : 'Iniciar Cotação'}
                                         onPress={() => initCotacao(requisicao.id, requisicao.id_colaborador)}
+                                        icon="shopping"
                                         disabled={requisicao.status === 'Finalizada'}
-                                        style={styles.cotacaoButton}
-                                    >
-                                        {requisicao.status === 'Finalizada' ? 'Finalizada' : 'Iniciar Cotação'}
-                                    </Button>
-                                    <Button
-                                        mode="contained"
+                                        borderRadius={15}
+                                    />
+
+                                    <CustomButton
+                                        title='Detalhes'
                                         onPress={() =>
                                             navigation.navigate('DetalhesRequisicaoScreen', {
                                                 colaboradorId: requisicao.id_colaborador,
                                                 requisicaoId: requisicao.id,
                                             })
                                         }
-                                        style={styles.cotacaoButton}
-                                    >
-                                        Detalhes
-                                    </Button>
+                                        icon="account-details"
+
+                                        borderRadius={15}
+                                    />
+
                                 </>
                             )}
                         />
