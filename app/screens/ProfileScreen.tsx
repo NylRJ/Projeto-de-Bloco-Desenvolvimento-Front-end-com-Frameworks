@@ -12,13 +12,12 @@ import LoadingIndicator from '../components/LoadingIndicator';
 type ProfileScreenNavigationProp = StackNavigationProp<RootStackParamList, 'ProfileScreen'>;
 
 const ProfileScreen: React.FC = () => {
-    const { isThemeDark, toggleTheme } = useThemeContext(); // Usa o contexto de tema
+    const { isThemeDark, toggleTheme } = useThemeContext();
     const [imageUri, setImageUri] = useState<string | null>(null);
-    const { colors } = useTheme(); // Obtém as cores do tema atual
+    const { colors } = useTheme();
     const navigation = useNavigation<ProfileScreenNavigationProp>();
-    const [loading, setLoading] = useState(false); // Controle de carregamento
+    const [loading, setLoading] = useState(false);
 
-    // Função para selecionar uma imagem da galeria
     const pickImage = async () => {
         const pickerResult = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.Images,
@@ -33,11 +32,11 @@ const ProfileScreen: React.FC = () => {
         }
     };
 
-    // Função para salvar a imagem no Firebase Storage
+
     const handleSaveImage = async () => {
         if (imageUri) {
             try {
-                setLoading(true); // Ativa o indicador de carregamento
+                setLoading(true);
                 const downloadUrl = await uploadImageAsync(imageUri, 'perfil-usuario');
                 Alert.alert('Sucesso', 'Imagem de perfil atualizada com sucesso!');
                 navigation.navigate('HomeScreen');
@@ -45,14 +44,14 @@ const ProfileScreen: React.FC = () => {
                 console.error('Erro ao salvar a imagem:', error);
                 Alert.alert('Erro', 'Falha ao atualizar a imagem de perfil.');
             } finally {
-                setLoading(false); // Desativa o indicador de carregamento
+                setLoading(false);
             }
         } else {
             Alert.alert('Erro', 'Nenhuma imagem selecionada.');
         }
     };
 
-    // Exibe o componente de carregamento enquanto estiver salvando
+
     if (loading) {
         return <LoadingIndicator text="Salvando imagem..." />;
     }
@@ -77,6 +76,14 @@ const ProfileScreen: React.FC = () => {
                 style={styles.saveButton}
             >
                 Salvar Foto
+            </Button>
+
+            <Button
+                mode="outlined"
+                onPress={() => navigation.navigate('PasswordRecoveryScreen')}
+                style={styles.recoverPasswordButton}
+            >
+                Recuperar Senha
             </Button>
 
             <View style={styles.themeSwitcher}>
@@ -106,6 +113,9 @@ const styles = StyleSheet.create({
         fontSize: 16,
     },
     saveButton: {
+        marginTop: 16,
+    },
+    recoverPasswordButton: {
         marginTop: 16,
     },
     themeSwitcher: {

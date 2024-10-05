@@ -5,6 +5,7 @@ export type RootStackParamList = {
     SignupScreen: undefined;
     AuthContext: undefined;
     BlockedScreen: undefined;
+    PasswordRecoveryScreen: undefined;
     AdicionarProdutoScreen: undefined;
     AddFornecedor: undefined;
     FornecedorListScreen: undefined;
